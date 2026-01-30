@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app        # 👈 Mount local frontend folder for live edits
+      - /app/node_modules      # 👈 Keep node_modules inside container
+    environment:
+      - VITE_BACKEND_URL=http://localhost:3000  # Make sure frontend can reach backend
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    volumes:
+      - ./backend:/app         # Optional: live reload backend changes
+      - /app/node_modules
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/database
+
+  mongo:
+    image: mongo:6
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
