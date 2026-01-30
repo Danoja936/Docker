@@ -20,3 +20,8 @@ Thumbs.db
 # AWS CLI
 aws/
 awscliv2.zip
+
+# Terraform
+*.tfstate
+*.tfstate.backup
+.terraform/
