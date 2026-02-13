@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        label 'docker-agent' // Make sure this agent has Docker installed
-    }
+    agent any
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
@@ -15,6 +13,12 @@ pipeline {
             steps {
                 echo "Cloning repository..."
                 git branch: 'main', url: 'https://github.com/Danoja936/Docker.git'
+            }
+        }
+
+        stage('Check Docker') {
+            steps {
+                sh 'docker --version'
             }
         }
 
