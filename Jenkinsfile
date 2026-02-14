@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
         IMAGE_FRONTEND = "danoja123/fruitshop-frontend:latest"
         IMAGE_BACKEND = "danoja123/fruitshop-backend:latest"
     }
@@ -22,10 +21,21 @@ pipeline {
             }
         }
 
+        stage('Login to Docker Hub') {
+            steps {
+                // Wrap in withCredentials so Jenkins injects username/password
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', 
+                                                  passwordVariable: 'DOCKERHUB_PASSWORD', 
+                                                  usernameVariable: 'DOCKERHUB_USERNAME')]) {
+                    sh 'echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin'
+                }
+            }
+        }
+
         stage('Build Frontend Image') {
             steps {
                 dir('frontend') {
-                    sh 'docker build -t $IMAGE_FRONTEND .'
+                    sh "docker build -t $IMAGE_FRONTEND ."
                 }
             }
         }
@@ -33,21 +43,15 @@ pipeline {
         stage('Build Backend Image') {
             steps {
                 dir('backend') {
-                    sh 'docker build -t $IMAGE_BACKEND .'
+                    sh "docker build -t $IMAGE_BACKEND ."
                 }
-            }
-        }
-
-        stage('Login to Docker Hub') {
-            steps {
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
             }
         }
 
         stage('Push Images') {
             steps {
-                sh 'docker push $IMAGE_FRONTEND'
-                sh 'docker push $IMAGE_BACKEND'
+                sh "docker push $IMAGE_FRONTEND"
+                sh "docker push $IMAGE_BACKEND"
             }
         }
 
