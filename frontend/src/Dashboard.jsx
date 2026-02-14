@@ -40,7 +40,7 @@ function Dashboard() {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px" }}>
           <div>
             <h1 style={{ fontSize: "2.5rem", color: "var(--text-dark)" }}>Welcome Back, Danoja! 👋</h1>
-            <p style={{ color: "var(--text-light)", fontSize: "1.1rem" }}>Pick your favorite fruits .</p>
+            <p style={{ color: "var(--text-light)", fontSize: "1.1rem" }}>Pick your favorite fruits today .</p>
           </div>
           <button
             className="btn btn-secondary"
